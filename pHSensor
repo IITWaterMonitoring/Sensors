@@ -1,0 +1,32 @@
+void begin_pH(){
+  pHSerial.print("E\r");
+  delay(100);
+  pHSerial.flush();
+}
+
+float read_pH(){
+  pHSerial.print("R\r");
+  delay(400);
+  
+  char inputString[15] = "\0";
+  int i = 0;
+  while(pHSerial.available()){
+    inputString[i] = pHSerial.read();
+    i++;
+  }
+  
+  inputString[i-1] = '\0';
+  
+  if(inputString[0] == 'c' || inputString[0] == '\0'){
+    return -1.0;
+  }
+  else{
+    return atof(inputString);
+  }
+}
+
+void tempCalibrate_pH(float t){
+  pHSerial.print(t);
+  pHSerial.print("\r");
+
+}
