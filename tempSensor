@@ -1,0 +1,17 @@
+float read_temp(void){
+  float v_out;
+  float temp;
+  
+  digitalWrite(TempPin, LOW);
+  
+  digitalWrite(TempPinVCC,HIGH);
+  delay(2);
+  v_out = analogRead(0);
+  digitalWrite(TempPinVCC, LOW);
+  
+  v_out*=.0048;                  //ADC points to volts
+  v_out*=1000;                    //volts to minivolts
+  temp=0.0512*v_out-20.5128;      //millivolts to temp
+  
+  return temp;
+}
