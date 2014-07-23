@@ -1,0 +1,51 @@
+#include <SoftwareSerial.h>      //add soft serial library
+
+#define pHrxpin 10                //set the RX pin for pH to pin 10
+#define pHtxpin 9                 //set the TX pin for pH to pin 9
+#define ECrxpin 8                 //set the RX pin for EC to pin 8
+#define ECtxpin 7                 //set the TX pin for EC to pin 7
+#define TempPinVCC 2              //set the digital pin for temp
+#define TempPin A0                //set the analog pin for temp
+
+SoftwareSerial ECSerial(ECrxpin, ECtxpin);      //enable the soft serial port for EC
+SoftwareSerial pHSerial(pHrxpin, pHtxpin);      //enable the soft serial port for pH
+
+unsigned long lastSent = 0;
+unsigned long loopTime = 5000;              //milliseconds
+
+void setup() {
+  
+  Serial.begin(38400);                      //initialize the communication with the computer
+  pHSerial.begin(38400);                    //set baud rate for software serial port for pH
+  ECSerial.begin(38400);                    //set baud rate for software serial for EC
+  
+  begin_pH();                              //initializing pH sensor
+  begin_EC();                              //initializing the EC sensor
+  pinMode(2, OUTPUT);                      //set pin 2 as output for temp sensor
+  Serial.println("Temp, pH, EC, TDS, Salinity, SG");
+}
+
+void loop() {
+  
+  unsigned long currentTime= millis();
+  if((currentTime-lastSent) >= loopTime){        //if statement to provide output every loopTime
+  lastSent = currentTime;
+  
+  float temp = read_temp();
+  tempCalibrate_pH(temp);
+  tempCalibrate_EC(temp);
+  float pH = read_pH();
+  String EC = read_EC();
+  
+  Serial.print(temp);
+  Serial.print(",");
+  
+  Serial.print(pH);
+  Serial.print(",");
+  
+  Serial.print(EC);
+  Serial.println();
+  
+  }
+}
+  
