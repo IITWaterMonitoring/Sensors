@@ -1,0 +1,32 @@
+void begin_EC(){
+  
+  ECSerial.print("C,0\r");              //disabling continuous mode
+  delay(100);
+  ECSerial.flush();
+}
+
+String read_EC(){
+  ECSerial.print("R\r");
+  delay(400);
+  
+  char inputString2[49] = "\0";
+  int i = 0;
+  while(ECSerial.available()){
+    inputString2[i] = ECSerial.read();
+    i++;
+  }
+  
+  inputString2[i-1] = '\0';
+  
+  if(inputString2[0] == 'c' || inputString2[0] == '\0'){
+    return "-1.0";
+  }
+  else{
+    return inputString2;
+  }
+}
+
+void tempCalibrate_EC(float temp){
+  ECSerial.print("T,temp\r");
+  
+}
